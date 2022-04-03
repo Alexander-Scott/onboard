@@ -1,0 +1,7 @@
+plan_name: my_plan
+author: alexanderscott@outlook.com
+topics:
+  - name: topic_1
+    desc: topic_1 description
+    exercises:
+      - name: exercise_1
