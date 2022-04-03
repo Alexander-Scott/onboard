@@ -15,14 +15,8 @@ func Run() error {
 
 	// 3) Optionally select/deselect parts of the plan
 
-	// 4) Get the destination repo URL
-	destination_domain := prompt_destination_domain()
-	destination_org := prompt_destination_org()
-	destination_repo := prompt_destination_repo()
-	fmt.Printf("Destination repo is %q/%q/%q\n", destination_domain, destination_org, destination_repo)
-
-	// 5) Write the plan to the destination repo
-	check_repo_access(destination_domain, destination_org, destination_repo)
+	// 4) Write the plan to the destination repo
+	write_plan(plan_data)
 
 	return nil
 }

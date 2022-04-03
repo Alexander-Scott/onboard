@@ -8,7 +8,24 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func check_repo_access(domain string, org string, repo string) bool {
+func write_plan(plan_data map[interface{}]interface{}) {
+	destination_domain := prompt_destination_domain()
+	destination_org := prompt_destination_org()
+	destination_repo := prompt_destination_repo()
+	fmt.Printf("Destination repo is %q/%q/%q\n", destination_domain, destination_org, destination_repo)
+
+	github_client := create_client()
+
+	repository := get_repository(github_client, destination_domain, destination_org, destination_repo)
+	if repository != nil {
+		issue := &github.IssueRequest{
+			Title: github.String("test"),
+		}
+		github_client.Issues.Create(context.Background(), destination_org, destination_repo, issue)
+	}
+}
+
+func create_client() *github.Client {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: ""},
@@ -17,11 +34,15 @@ func check_repo_access(domain string, org string, repo string) bool {
 
 	// `NewEnterpriseClient` for GHE
 	client := github.NewClient(tc)
-	_, _, err := client.Repositories.Get(ctx, org, repo)
+	return client
+}
+
+func get_repository(client *github.Client, domain string, org string, repo string) *github.Repository {
+	repository, _, err := client.Repositories.Get(context.Background(), org, repo)
 	if err != nil {
 		fmt.Printf("Request failed %v\n", err)
-		return false
+		return nil
 	}
 	fmt.Print("Repo access check success!")
-	return true
+	return repository
 }
